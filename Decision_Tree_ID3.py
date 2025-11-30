@@ -9,11 +9,7 @@ from sklearn.datasets import load_iris
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import confusion_matrix, classification_report
 
-plt.rcParams['font.sans-serif'] = ['SimHei', 'Arial Unicode MS', 'DejaVu Sans']
-plt.rcParams['axes.unicode_minus'] = False
-
-# 设置中文字体和图形样式
-plt.rcParams['font.sans-serif'] = ['SimHei', 'Arial Unicode MS', 'DejaVu Sans']
+plt.rcParams['font.sans-serif'] = ['DejaVu Sans', 'SimHei', 'Microsoft YaHei', 'Arial Unicode MS', 'WenQuanYi Micro Hei']
 plt.rcParams['axes.unicode_minus'] = False
 sns.set_style("whitegrid")
 
@@ -184,7 +180,7 @@ class DecisionTreeVisualizer:
                 samples = node['samples']
 
                 # 绘制叶节点
-                ax.text(x, y, f'{class_name}\n置信度: {confidence:.2f}\n样本数: {samples}',
+                ax.text(x, y, f'{class_name}\nConfidence Level: {confidence:.2f}\nNumber of Samples: {samples}',
                         ha='center', va='center',
                         bbox=dict(boxstyle="round,pad=0.3", facecolor='lightgreen', alpha=0.7),
                         fontsize=9)
@@ -195,7 +191,7 @@ class DecisionTreeVisualizer:
                 gain = node['gain']
                 samples = node['samples']
 
-                ax.text(x, y, f'{feature_name} <= {threshold:.2f}\n信息增益: {gain:.3f}\n样本数: {samples}',
+                ax.text(x, y, f'{feature_name} <= {threshold:.2f}\nInformation gain: {gain:.3f}\nNumber of Samples: {samples}',
                         ha='center', va='center',
                         bbox=dict(boxstyle="round,pad=0.3", facecolor='lightblue', alpha=0.7),
                         fontsize=8)
@@ -209,11 +205,11 @@ class DecisionTreeVisualizer:
                 plot_node(node['right'], x + dx, y - dy, dx / 2, dy)
 
                 # 添加分支标签
-                ax.text(x - dx / 2, y - dy / 2, '是', ha='center', va='center', fontsize=7)
-                ax.text(x + dx / 2, y - dy / 2, '否', ha='center', va='center', fontsize=7)
+                ax.text(x - dx / 2, y - dy / 2, 'Yes', ha='center', va='center', fontsize=7)
+                ax.text(x + dx / 2, y - dy / 2, 'No', ha='center', va='center', fontsize=7)
 
         plot_node(self.model.tree, 0.5, 0.95, 0.2, 0.2)
-        plt.title('决策树结构可视化', fontsize=14, fontweight='bold', pad=20)
+        plt.title('DecisionTree Visualization', fontsize=14, fontweight='bold', pad=20)
         plt.tight_layout()
         return fig
 
@@ -230,8 +226,8 @@ class DecisionTreeVisualizer:
             ax.set_yticks(range(len(features)))
             ax.set_yticklabels(features)
             ax.invert_yaxis()
-            ax.set_xlabel('特征重要性')
-            ax.set_title('决策树特征重要性排序', fontsize=14, fontweight='bold')
+            ax.set_xlabel('Importance of Features')
+            ax.set_title('Feature Importance Ranking of DecisionTree', fontsize=14, fontweight='bold')
 
             # 在条形上添加数值
             for i, bar in enumerate(bars):
@@ -251,16 +247,16 @@ class DecisionTreeVisualizer:
         sns.heatmap(cm, annot=True, fmt='d', cmap='Blues',
                     xticklabels=self.target_names,
                     yticklabels=self.target_names, ax=ax)
-        ax.set_xlabel('预测标签')
-        ax.set_ylabel('真实标签')
-        ax.set_title('混淆矩阵', fontsize=14, fontweight='bold')
+        ax.set_xlabel('Predicted Label')
+        ax.set_ylabel('Actual Label')
+        ax.set_title('Confusion Matrix', fontsize=14, fontweight='bold')
         plt.tight_layout()
         return fig
 
     def plot_decision_boundaries(self, X, y, features_idx=(0, 1), figsize=(12, 4)):
         """绘制决策边界（选择两个特征）"""
         if len(features_idx) != 2:
-            raise ValueError("请选择两个特征进行可视化")
+            raise ValueError("Please choose two features for visualization")
 
         feat1, feat2 = features_idx
         feature1_name = self.feature_names[feat1]
@@ -289,7 +285,7 @@ class DecisionTreeVisualizer:
                               cmap=plt.cm.RdYlBu, edgecolor='black', s=50)
         ax1.set_xlabel(feature1_name)
         ax1.set_ylabel(feature2_name)
-        ax1.set_title(f'决策边界 ({feature1_name} vs {feature2_name})')
+        ax1.set_title(f'Decision Boundary ({feature1_name} vs {feature2_name})')
         plt.colorbar(contour, ax=ax1)
 
         # 右侧：分类结果散点图
@@ -299,7 +295,7 @@ class DecisionTreeVisualizer:
         ax2.scatter(X[:, feat1], X[:, feat2], c=colors, alpha=0.6, s=50)
         ax2.set_xlabel(feature1_name)
         ax2.set_ylabel(feature2_name)
-        ax2.set_title('分类结果（绿色:正确, 红色:错误）')
+        ax2.set_title('Classification Result(Green:Correct, Red:Wrong)')
 
         plt.tight_layout()
         return fig
@@ -318,11 +314,11 @@ class DecisionTreeVisualizer:
             test_scores.append(temp_model.score(X_test, y_test))
 
         fig, ax = plt.subplots(figsize=figsize)
-        ax.plot(depths, train_scores, 'o-', label='训练集准确率', linewidth=2)
-        ax.plot(depths, test_scores, 's-', label='测试集准确率', linewidth=2)
-        ax.set_xlabel('决策树深度')
-        ax.set_ylabel('准确率')
-        ax.set_title('不同深度下的模型性能')
+        ax.plot(depths, train_scores, 'o-', label='Training set accuracy', linewidth=2)
+        ax.plot(depths, test_scores, 's-', label='Test set accuracy', linewidth=2)
+        ax.set_xlabel('Decision Tree Depth')
+        ax.set_ylabel('Accurarcy')
+        ax.set_title('Model Performance at different depths')
         ax.legend()
         ax.grid(True, alpha=0.3)
         plt.tight_layout()
@@ -331,7 +327,7 @@ class DecisionTreeVisualizer:
 
 def main():
     """主函数：完整的测试和可视化"""
-    print("=== 决策树ID3算法实现 - 鸢尾花数据集分类与可视化 ===\n")
+    print("=== Decision Tree ID3 Algorithm - Iris Dataset Classification & Visualization ===\n")
 
     # 1. 加载数据
     iris = load_iris()
@@ -339,24 +335,24 @@ def main():
     feature_names = iris.feature_names
     target_names = iris.target_names
 
-    print("数据集信息:")
-    print(f"- 样本数量: {X.shape[0]}")
-    print(f"- 特征数量: {X.shape[1]}")
-    print(f"- 特征名称: {list(feature_names)}")
-    print(f"- 类别名称: {list(target_names)}")
-    print(f"- 类别分布: {dict(zip(target_names, np.bincount(y)))}\n")
+    print("Dataset Information:")
+    print(f"- Number of Samples: {X.shape[0]}")
+    print(f"- Number of features: {X.shape[1]}")
+    print(f"- Feature Name: {list(feature_names)}")
+    print(f"- Class Name: {list(target_names)}")
+    print(f"- Class Distribution: {dict(zip(target_names, np.bincount(y)))}\n")
 
     # 2. 数据划分
     X_train, X_test, y_train, y_test = train_test_split(
         X, y, test_size=0.3, random_state=42, stratify=y
     )
 
-    print("数据划分:")
-    print(f"- 训练集大小: {X_train.shape[0]}")
-    print(f"- 测试集大小: {X_test.shape[0]}")
+    print("Data Split:")
+    print(f"- Size of Training Set: {X_train.shape[0]}")
+    print(f"- Size of Test Set: {X_test.shape[0]}")
 
     # 3. 训练模型
-    print("\n训练决策树模型中...")
+    print("\nTraining Decision Tree Model...")
     dt = DecisionTreeID3(max_depth=4, min_samples_split=5)
     dt.feature_names = feature_names
     dt.fit(X_train, y_train)
@@ -365,15 +361,15 @@ def main():
     train_accuracy = dt.score(X_train, y_train)
     test_accuracy = dt.score(X_test, y_test)
 
-    print("\n模型性能评估:")
-    print(f"- 训练集准确率: {train_accuracy:.3f}")
-    print(f"- 测试集准确率: {test_accuracy:.3f}")
+    print("\nModel Performance Evaluation:")
+    print(f"- Training Set Accuracy: {train_accuracy:.3f}")
+    print(f"- Test Set Accuracy: {test_accuracy:.3f}")
 
     # 5. 创建可视化器
     visualizer = DecisionTreeVisualizer(dt, feature_names, target_names)
 
     # 6. 生成所有可视化图表
-    print("\n生成可视化图表...")
+    print("\nGenerating Visualizations...")
 
     # 特征重要性图
     fig1 = visualizer.plot_feature_importance()
@@ -397,7 +393,7 @@ def main():
 
     # 7. 显示详细分类报告
     y_pred = dt.predict(X_test)
-    print("\n详细分类报告:")
+    print("\nclassification_report:")
     print(classification_report(y_test, y_pred, target_names=target_names))
 
     # 8. 显示预测示例
@@ -408,10 +404,10 @@ def main():
         predicted = target_names[y_pred[idx]]
         confidence = dt.predict_proba(X_test[idx:idx + 1])[0]
         status = "✓" if actual == predicted else "✗"
-        print(f"样本{i + 1}: {status} 实际={actual:12} 预测={predicted:12} 置信度={confidence:.3f}")
+        print(f"Sample{i + 1}: {status} Actual={actual:12} Predicted={predicted:12} Confidence Level={confidence:.3f}")
 
-    print(f"\n所有可视化图表已保存为PNG文件")
-    print("可以关闭图表窗口继续程序...")
+    print(f"\nAll visualizations saved as PNG files")
+    print("Plots displayed.​ Close windows to continue.")
     plt.show()
 
 
