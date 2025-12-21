@@ -13,7 +13,7 @@ warnings.filterwarnings('ignore')
 
 
 # 1. 自定义K-means聚类算法实现
-class KMeans:
+class Optimized_Kmeans:
     def __init__(self, n_clusters=3, max_iter=300, tol=1e-4, random_state=None):
         """
         初始化K-means聚类器
@@ -158,7 +158,7 @@ def elbow_method(X, max_k=10):
             inertia = np.sum((X - X.mean(axis=0)) ** 2)
             inertias.append(inertia)
         else:
-            kmeans = KMeans(n_clusters=k, random_state=42)
+            kmeans = Optimized_Kmeans(n_clusters=k, random_state=42)
             kmeans.fit(X)
             inertias.append(kmeans.inertia_)
 
@@ -368,7 +368,7 @@ def main():
 
     # 使用建议的K值进行聚类
     print(f"\n2. 使用K-means进行聚类 (k={elbow_k})...")
-    kmeans = KMeans(n_clusters=elbow_k, random_state=42)
+    kmeans = Optimized_Kmeans(n_clusters=elbow_k, random_state=42)
     kmeans.fit(X)
     y_pred = kmeans.labels
 
@@ -404,7 +404,7 @@ def main():
     print("\n5. 对比不同K值的聚类性能...")
     results = []
     for k in [2, 3, 4, 5, 6]:
-        kmeans_k = KMeans(n_clusters=k, random_state=42)
+        kmeans_k = Optimized_Kmeans(n_clusters=k, random_state=42)
         kmeans_k.fit(X)
         y_pred_k = kmeans_k.labels
 
@@ -530,7 +530,7 @@ def main():
     results_init = []
 
     # 使用自定义的k-means++（已经实现）
-    kmeans_plusplus = KMeans(n_clusters=elbow_k, random_state=42)
+    kmeans_plusplus = Optimized_Kmeans(n_clusters=elbow_k, random_state=42)
     kmeans_plusplus.fit(X)
     inertia_pp = kmeans_plusplus.inertia_
 
